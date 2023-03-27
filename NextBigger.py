@@ -1,3 +1,5 @@
+# https://www.codewars.com/kata/55983863da40caa2c900004e
+
 # Create a function that takes a positive integer and returns the next bigger number that can be formed by
 # rearranging its digits. For example:
 #
@@ -9,18 +11,23 @@
 #   9 ==> -1
 # 111 ==> -1
 # 531 ==> -1
+from itertools import permutations
+
 
 def next_bigger(n: int):
     digits = list(str(n))
-    next_big = n
-    for i in range(len(digits) - 1):
+    res = -1
+    for i in range(len(digits) - 2, -1, -1):
         if digits[i] < digits[i + 1]:
-            digits[i], digits[i + 1] = digits[i + 1], digits[i]
-            temp = int(''.join(digits))
-            if next_big == n or next_big > temp:
-                next_big = temp
-            digits[i], digits[i + 1] = digits[i + 1], digits[i]
-    return next_big if next_big > n else -1
+            tmp = sorted(digits[i + 1:])
+            for j in range(len(tmp)):
+                if digits[i] < tmp[j]:
+                    digits[i], tmp[j] = tmp[j], digits[i]
+                    tmp.sort()
+                    break
+            res = int(''.join(digits[:i + 1] + tmp))
+            break
+    return res
 
 
 print(next_bigger(12))  # 21
